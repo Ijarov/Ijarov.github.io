@@ -36,9 +36,9 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 
 ### Subsystem Detail: Mechanical Claw & Gripper Assembly
 
-<p align="center">
-  <img src="enph-253-robot-claw.jpg" alt="Claw Bird's Eye View" width="45%" />
-  <img src="enph-253-claw-assembly-gif.gif" alt="CAD Assembly Motion" width="45%" />
+<p align="center" style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+  <img src="enph-253-robot-claw.jpg" alt="Claw Bird's Eye View" style="height: 320px; width: 48%; object-fit: cover; border-radius: 4px;" />
+  <img src="enph-253-claw-assembly-gif.gif" alt="CAD Assembly Motion" style="height: 320px; width: 48%; object-fit: cover; border-radius: 4px;" />
 </p>
 
 *Figure 2: Bird's-eye view of claw (left) and dynamic CAD motion study of the gear-driven gripper mechanism (right).*
