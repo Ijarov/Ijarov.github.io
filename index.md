@@ -34,6 +34,8 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 
 * **Chassis Insulation:** Managed grounding loop considerations by consistently routing power components to power board.
 
+### Claw FUNCTION GIF HERE
+
 ### MECH: Mechanical Claw & Gripper Assembly
 
 | Fabricated Physical Claw | Dynamic CAD Motion Assembly |
