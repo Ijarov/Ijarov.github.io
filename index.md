@@ -26,11 +26,11 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 Designed and built a fully autonomous mobile robot as part of a team for a competition requiring course navigation, sensor feedback, and task completion under strict time constraints.
 
 #### Key System Breakdown
-* **Mechanical & Chassis:** Modeled complete assembly in SolidWorks. Fabricated laser-cut chassis components and custom mechanical actuators designed for weight reduction and structural integrity.
-* **Electronics & PCB:** Designed and assembled custom motor driver circuitry and sensor integration boards using KiCad.
+* **Mechanical & Chassis:** Modeled complete assembly in OnShape. Fabricated laser-cut chassis components and custom mechanical actuators designed for weight reduction and structural integrity.
+* **Electronics & PCB:** Designed and assembled custom motor driver circuitry (H-bridges) and sensor integration boards using KiCad.
 * **Firmware & Control:** Developed low-level firmware in C++ for state-machine execution, closed-loop feedback control, and real-time sensor processing (sonar / optical).
 
-#### Engineering Challenges & Solutions
+#### General Engineering Challenges & Solutions
 * **Noise & Signal Interference:** Implemented signal conditioning circuits and software filtering to eliminate sensor jitter during motor activation.
 * **Chassis Insulation:** Managed grounding loop considerations by consistently routing power components to power board.
 
