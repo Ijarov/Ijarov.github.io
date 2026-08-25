@@ -39,7 +39,7 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 | Fabricated Physical Claw | Dynamic CAD Motion Assembly |
 | :---: | :---: |
 | ![Physical Claw](enph-253-robot-claw-cropped.jpg) | ![CAD Motion](enph-253-claw-assembly-gif.gif) |
-|*Figure 2: Bird's-eye view of claw (left)* | *Figure 3: dynamic CAD motion study of the gear-driven gripper mechanism (right).* |
+|*Figure 2: Bird's-eye view of claw (left).* | *Figure 3: dynamic CAD motion assembly of the gear-driven gripper mechanism (right).* |
 
 #### Mechanical & Fabrication Highlights
 * **Actuation & Drive Mechanism:** Designed a worm-spur gear combination to a four-bar linkage to achieve immense opening/closing torque for objective pickup.
