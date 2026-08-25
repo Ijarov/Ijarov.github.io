@@ -1,4 +1,4 @@
-**Ilya Hsieh-Jarov**
+## Ilya Hsieh-Jarov
 
 **Engineering Physics Student** | [LinkedIn](https://www.linkedin.com/in/ilya-hsieh-jarov) | [GitHub](https://github.com/Ijarov) | [Email](mailto:ijarov94@gmail.com)
 
@@ -17,7 +17,7 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 ## Featured Projects
 
 ### ENPH 253: Autonomous Competition Robot
-**Keywords:** Autonomous Robotics | SolidWorks | Custom PCB | C++ / Microcontrollers | Prototyping
+**Keywords:** Autonomous Robotics | SolidWorks | Custom PCB | C++ / ESP32 Microcontrollers | Prototyping
 
 ![Robot Front](enph-253-robot-front.jpg)
 
