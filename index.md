@@ -1,6 +1,6 @@
 ## Ilya Hsieh-Jarov
 
-**Engineering Physics Student** - [LinkedIn](https://www.linkedin.com/in/ilya-hsieh-jarov) | [GitHub](https://github.com/Ijarov) | [Email](mailto:ijarov94@gmail.com)
+**Engineering Physics Student** | [LinkedIn](https://www.linkedin.com/in/ilya-hsieh-jarov) | [GitHub](https://github.com/Ijarov) | [Email](mailto:ijarov94@gmail.com)
 
 ---
 
