@@ -31,10 +31,10 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Firmware & Control:** Developed low-level firmware in C++ for state-machine execution, closed-loop feedback control, and real-time sensor processing (sonar / optical).
 
 #### General Engineering Challenges & Solutions
-* **Noise & Signal Interference:** Implemented signal conditioning circuits and software filtering to eliminate sensor jitter during motor activation.
+
 * **Chassis Insulation:** Managed grounding loop considerations by consistently routing power components to power board.
 
-### Subsystem Detail: Mechanical Claw & Gripper Assembly
+### MECH: Mechanical Claw & Gripper Assembly
 
 | Fabricated Physical Claw | Dynamic CAD Motion Assembly |
 | :---: | :---: |
@@ -47,12 +47,23 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Sensing:** A central forward-facing sonar sensor is used for gripping distance. There is a metal detecting coil under the claw base which encapsulates the rock and detects a change in resonance frequency, signalling that metal has been detected.
 
 #### Troubleshooting
-* **The problem:** The 3D printed worm gear would often get jammed, especially at fully open/closed positions.
-* **Possible Culprits:** We suspected that the 3D printed worm gear was coarse and thermally expanded when printing. Therefore, the tolerance became tighter and the gears would not mesh smoothly. Also, at the edge cases, the DC motor would continue to drive at high PWM duty cycles causing any loosely connected arm components to jam up, further contributing to the issue. The motor would not have enough torque to overcome the rough spots.
+* **The Problem:** The 3D printed worm gear would often get jammed, especially at fully open/closed positions.
+* **Determined Causes:** We suspected that the 3D printed worm gear was coarse and thermally expanded when printing. Therefore, the tolerance became tighter and the gears would not mesh smoothly. Also, at the edge cases, the DC motor would continue to drive at high PWM duty cycles causing any loosely connected arm components to jam up, further contributing to the issue. The motor would not have enough torque to overcome the rough spots.
 * **Our Solution:** To prevent the rough spots, we redesigned the worm gear to have much looser tolerance and applied lithium grease. This introduced more play in the claw, but we favoured the increase in reliability. However, the claw would still jam in the fully open position. We implemented a limit switch at the half-open position as this was mechanically optimal and successfully prevented the jamming issues.
-  
+
+### ELEC: Filtering Noisy Wheel Rotary Encoders
+
+
+
+* **The Problem:** When scoping the rotary encoder output, the signal was incredibly noisy, even when spun by hand. We could not reliably determine position.
+* **Determined Causes:** Since the encoders were essentially mechanical switches, they experienced significant debouncing at high frequency. We determined that we could low-pass filter the desired signal since the motors would not spin at high angular velocity.
+* **Our Solution:** I paired a RC low pass filter in series with a manually-created schmitt-trigger inverter to successfully filter the wheel rotary encoders' noisy signals.
+
 ---
 
 ## Education & Coursework
 * **BASc in Engineering Physics** — The University of British Columbia
 * **Relevant Coursework:** Systems & Control, Mechanics, Microcomputers, Circuit Design
+
+
+(ADD GRABBING AND KiCad STUFF!!!)
