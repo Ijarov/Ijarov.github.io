@@ -44,7 +44,7 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 #### Mechanical & Fabrication Highlights
 * **Actuation & Drive Mechanism:** Designed a worm-spur gear combination to a four-bar linkage to achieve immense opening/closing torque for objective pickup.
 * **Structural Material:** Fabricated the primary claw structure out of PLA and acetal for structural rigidity while minimizing cantilevered weight on the robot chassis.
-* **Sensing:** A central forward-facing sonar sensor is used for gripping distance. There is a metal detecting coil under the claw base which encapsulates the rock and detects a change in resonance frequency.
+* **Sensing:** A central forward-facing sonar sensor is used for gripping distance. There is a metal detecting coil under the claw base which encapsulates the rock and detects a change in resonance frequency, signalling that metal has been detected.
 
 #### Troubleshooting
 * **The problem:** The 3D printed worm gear would often get jammed, especially at fully open/closed.
