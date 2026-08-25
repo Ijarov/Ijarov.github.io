@@ -19,7 +19,7 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 ### ENPH 253: Autonomous Competition Robot
 **Keywords:** Autonomous Robotics | SolidWorks | Custom PCB | C++ / Microcontrollers | Prototyping
 
-![Robot Front](ENPH 253 Robot Front.jpg)
+![Robot Front](ENPH 253 Robot Front.JPG)
 
 #### Summary
 Designed and built a fully autonomous mobile robot as part of a team for a competition requiring course navigation, sensor feedback, and task completion under strict time constraints.
