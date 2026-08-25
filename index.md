@@ -33,6 +33,19 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Noise & Signal Interference:** Implemented signal conditioning circuits and software filtering to eliminate sensor jitter during motor activation.
 * **Chassis Insulation:** Managed grounding loop considerations by consistently routing power components to power board.
 
+### Subsystem Detail: Mechanical Claw & Gripper Assembly
+
+<p align="center">
+  <img src="enph-253-robot-claw.jpg" alt="Claw Bird's Eye View" width="45%" />
+  <img src="enph-253-claw-assembly-gif.gif" alt="CAD Assembly Motion" width="45%" />
+</p>
+
+*Figure 1: Bird's-eye view of claw (left) and dynamic CAD motion study of the gear-driven gripper mechanism (right).*
+
+#### Mechanical & Fabrication Highlights
+* **Actuation & Drive Mechanism:** Designed a worm-spur gear combination to a four-bar linkage to achieve immense opening/closing torque for objective pickup.
+* **Structural Material:** Fabricated the primary claw structure out of PLA and acetal for structural rigidity while minimizing cantilevered weight on the robot chassis.
+
 ---
 
 ## Education & Coursework
