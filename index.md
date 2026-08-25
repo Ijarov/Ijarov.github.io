@@ -17,7 +17,7 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 ## Featured Projects
 
 ### ENPH 253: Autonomous Competition Robot
-**Keywords:** Autonomous Robotics | SolidWorks | Custom PCB | C++ / ESP32 Microcontrollers | Prototyping
+**Keywords:** Autonomous Robotics | OnShape | Custom PCB | C++ / ESP32 Microcontrollers | Prototyping | KiCad
 
 ![Robot Front](enph-253-robot-front.jpg)
 *Figure 1: Final robot.*
