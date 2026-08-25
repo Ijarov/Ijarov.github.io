@@ -53,11 +53,15 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 
 ### ELEC: Filtering Noisy Wheel Rotary Encoders
 
+![Encoder Filter](enph-253-encoder-filter.png)
+*Figure 4: Similar filter circuit used for infrared phototransistor.*
 
 
+
+#### Troubleshooting
 * **The Problem:** When scoping the rotary encoder output, the signal was incredibly noisy, even when spun by hand. We could not reliably determine position.
 * **Determined Causes:** Since the encoders were essentially mechanical switches, they experienced significant debouncing at high frequency. We determined that we could low-pass filter the desired signal since the motors would not spin at high angular velocity.
-* **Our Solution:** I paired a RC low pass filter in series with a manually-created schmitt-trigger inverter to successfully filter the wheel rotary encoders' noisy signals.
+* **Our Solution:** I paired a RC low pass filter in series with a manually-created schmitt-trigger inverter and an amplifier. It successfully filtered the wheel rotary encoders' noisy signals into clean square waves.
 
 ---
 
