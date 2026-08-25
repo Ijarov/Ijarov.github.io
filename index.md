@@ -1,4 +1,4 @@
-**Engineering Physics Student** | [LinkedIn](www.linkedin.com/in/ilya-hsieh-jarov) | [GitHub](github.com/Ijarov) | [Email](mailto:ijarov94@gmail.com)
+**Engineering Physics Student** | [LinkedIn](www.linkedin.com/in/ilya-hsieh-jarov) | [GitHub](https://github.com/Ijarov) | [Email](mailto:ijarov94@gmail.com)
 
 ---
 
