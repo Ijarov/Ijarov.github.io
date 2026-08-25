@@ -20,6 +20,7 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 **Keywords:** Autonomous Robotics | SolidWorks | Custom PCB | C++ / ESP32 Microcontrollers | Prototyping
 
 ![Robot Front](enph-253-robot-front.jpg)
+*Figure 1: Final robot.*
 
 #### Summary
 Designed and built a fully autonomous mobile robot as part of a team for a competition requiring course navigation, sensor feedback, and task completion under strict time constraints.
@@ -40,7 +41,7 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
   <img src="enph-253-claw-assembly-gif.gif" alt="CAD Assembly Motion" width="45%" />
 </p>
 
-*Figure 1: Bird's-eye view of claw (left) and dynamic CAD motion study of the gear-driven gripper mechanism (right).*
+*Figure 2: Bird's-eye view of claw (left) and dynamic CAD motion study of the gear-driven gripper mechanism (right).*
 
 #### Mechanical & Fabrication Highlights
 * **Actuation & Drive Mechanism:** Designed a worm-spur gear combination to a four-bar linkage to achieve immense opening/closing torque for objective pickup.
