@@ -35,7 +35,7 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Chassis Insulation:** Managed grounding loop considerations by consistently routing power components to power board.
 
 <video autoplay loop muted playsinline width="100%" style="border-radius: 6px;">
-  <source src="enph-253-robot-grasp2.mp4" type="video/mp4">
+  <source src="enph-253-robot-grasp-comp2.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
