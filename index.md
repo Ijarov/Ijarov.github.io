@@ -8,9 +8,9 @@
 Undergraduate Engineering Physics student with hands-on experience in autonomous robotics, mechanical design, embedded firmware, and physical prototyping.
 
 **Core Skills:**
-* **Design & CAD:** SolidWorks, KiCad, Rapid Prototyping (3D Printing, Laser Cutting)
+* **Design & CAD:** OnShape, KiCad, Rapid Prototyping (3D Printing, Laser Cutting)
 * **Software & Embedded:** Java, C, Python, Arduino, Git
-* **Fabrication:** Machine Shop Tools (Lathe, Mill, waterjet, MIG weling), Soldering
+* **Fabrication:** Machine Shop Tools (Lathe, Mill, waterjet, MIG welding), Soldering
 
 ---
 
