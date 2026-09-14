@@ -68,6 +68,9 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Determined Causes:** Since the encoders were essentially mechanical switches, they experienced significant debouncing at high frequency. We determined that we could low-pass filter the desired signal since the motors would not spin at high angular velocity.
 * **Our Solution:** I paired a RC low pass filter in series with a manually-created schmitt-trigger inverter and an amplifier. It successfully filtered the wheel rotary encoders' noisy signals into clean square waves.
 
+### ELEC: Metal Detector PCB
+
+
 ---
 
 ## Education & Coursework
@@ -75,4 +78,4 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Relevant Coursework:** Systems & Control, Mechanics, Microcomputers, Circuit Design
 
 
-(ADD GRABBING AND KiCad STUFF!!!)
+
