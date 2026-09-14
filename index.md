@@ -82,6 +82,11 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 ![Encoder Filter](enph-253-MD-pcb2.png)
 *Figure 7: Metal Detector PCB 3D.*
 
+#### Troubleshooting
+* **The Problem:** On a breadboard and protoboard, this circuit would not reliably function. The circuit requires specific coil inductance and capacitance in order for it to achieve a resonance frequency.
+* **Determined Causes:**  The coil was too large and had too much inductance. The breadboard and protoboard had poor connections. 
+* **Our Solution:** We researched optimal capacitor values and the optimal number of coil loops. 
+
 ---
 
 
