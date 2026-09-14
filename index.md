@@ -69,7 +69,12 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 * **Our Solution:** I paired a RC low pass filter in series with a manually-created schmitt-trigger inverter and an amplifier. It successfully filtered the wheel rotary encoders' noisy signals into clean square waves.
 
 ### ELEC: Metal Detector PCB
-
+![Encoder Filter](enph-253-MD-Cschematic.png)
+*Figure 5: Metal Detector Circuit Schematic.*
+![Encoder Filter](enph-253-MD-pcb1.png)
+*Figure 6: Metal Detector PCB.*
+![Encoder Filter](enph-253-Md-pcb2.png)
+*Figure 7: Metal Detector PCB 3D.*
 
 ---
 
