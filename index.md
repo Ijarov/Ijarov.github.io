@@ -14,6 +14,12 @@ Undergraduate Engineering Physics student with hands-on experience in autonomous
 
 ---
 
+## Education & Coursework
+* **BASc in Engineering Physics** — The University of British Columbia
+* **Relevant Coursework:** Systems & Control, Mechanics, Microcomputers, Circuit Design
+
+---
+
 ## Featured Projects
 
 ### ENPH 253: Autonomous Competition Robot
@@ -73,14 +79,12 @@ Designed and built a fully autonomous mobile robot as part of a team for a compe
 *Figure 5: Metal Detector Circuit Schematic.*
 ![Encoder Filter](enph-253-MD-pcb1.png)
 *Figure 6: Metal Detector PCB.*
-![Encoder Filter](enph-253-Md-pcb2.png)
+![Encoder Filter](enph-253-MD-pcb2.png)
 *Figure 7: Metal Detector PCB 3D.*
 
 ---
 
-## Education & Coursework
-* **BASc in Engineering Physics** — The University of British Columbia
-* **Relevant Coursework:** Systems & Control, Mechanics, Microcomputers, Circuit Design
+
 
 
 
