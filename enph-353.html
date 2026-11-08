@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robot learning in simulation | Ilya Hsieh-Jarov</title>
+  <meta name="description" content="ENPH 353: ROS 2 and Gazebo line following, a licence-plate CNN, Q-learning, a cart-pole balanced with deep reinforcement learning, and a competition robot that reads clue boards.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head wrap">
+  <a class="home" href="index.html">Ilya Hsieh-Jarov</a>
+  <nav aria-label="Site">
+    <a href="index.html#projects">Projects</a>
+    <a href="resume.pdf">Resume</a>
+  </nav>
+</header>
+
+<main id="main" class="wrap">
+  <div class="page-head">
+    <h1>Robot learning in simulation</h1>
+    <p class="lead">ENPH 353 is UBC’s robotics and machine learning course. We program simulated robots in ROS 2 and Gazebo, build up from classical computer vision to neural networks and learned controllers, and finish with a driving competition.</p>
+    <dl class="facts">
+      <dt>Course</dt><dd>ENPH 353, robotics and machine learning</dd>
+      <dt>Dates</dt><dd>September 2026 to present</dd>
+      <dt>Status</dt><dd>In progress; competition results to come</dd>
+      <dt>Tools</dt><dd>Python, ROS 2, Gazebo, URDF/Xacro, OpenCV, PyTorch, Keras, Gymnasium, TensorBoard, PyQt5, Linux, Git</dd>
+    </dl>
+  </div>
+
+  <div class="prose">
+    <h2>Line following with ROS 2 and OpenCV</h2>
+    <p>I started with recorded video: an OpenCV program that finds the line in each frame of a driving video and marks its position. Then I moved the same idea onto a simulated robot. In ROS 2 and Gazebo, I finished the robot’s description by adding its two wheels and a differential-drive plugin, connected Gazebo’s topics to ROS 2, and set it loose on a track modelled on the Monza circuit.</p>
+    <p>The controller is a Python ROS 2 node. It subscribes to the robot’s camera, thresholds each frame and scans a row of pixels to find the line, and a proportional controller publishes Twist steering commands. When the robot loses the line, it slows down until it finds it again.</p>
+  </div>
+  <figure class="bleed">
+    <video src="assets/enph353-line-follow.mp4" poster="assets/enph353-line-follow-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Gazebo window showing the robot driving around the Monza-shaped track, with the robot's camera view and the launch terminal beside it"></video>
+    <figcaption>Figure 1. My line follower driving the Monza track in Gazebo, with the robot’s camera view at top right. Sped up 2×.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>Feature matching in a live webcam feed</h2>
+    <p>I built a PyQt5 desktop app that finds a template image in a 10 FPS webcam feed. It detects SIFT features, matches them with FLANN, and uses a RANSAC homography to outline the template in each frame.</p>
+
+    <h2>A neural network from scratch</h2>
+    <p>To understand what deep learning frameworks do underneath, I built a small autograd engine and neural network following Andrej Karpathy’s micrograd, and checked my gradients against PyTorch.</p>
+
+    <h2>Reading licence plates with a CNN</h2>
+    <p>The competition’s clue boards use 36 characters, A to Z and 0 to 9, so this lab was practice for reading them. I generated 1,000 random plates with two letters and two digits on a blank B.C. plate template, cut each plate into its four character slots, and labelled each crop with a one-hot vector over the 36 classes. That gave about 4,000 training images.</p>
+  </div>
+  <figure>
+    <img class="crops" src="assets/enph353-plate-crops.jpg" alt="A generated plate reading AA 43, cut into four tall crops: A, A, 4, and 3, each with part of the Beautiful British Columbia slogan above it" width="940" height="646" loading="lazy">
+    <figcaption>Figure 2. One generated plate cut into its four character crops. Each crop is one training example.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <p>I adapted a convolutional network in Keras for the job: two convolution and max-pooling stages, then dropout and two dense layers ending in a 36-way softmax. Trained with RMSprop for 20 epochs, it reached 100% validation accuracy within a couple of epochs. On a separate set of 100 test plates, it read only 79% of the characters correctly.</p>
+  </div>
+  <figure class="cm">
+    <div class="diagram-box">
+      <div class="cm-head">
+        <p class="stat"><span class="stat-num">97.5%</span><span class="stat-label">of test letters read correctly (195 of 200)</span></p>
+        <p class="stat"><span class="stat-num">61%</span><span class="stat-label">of test digits read correctly (122 of 200)</span></p>
+      </div>
+      <ul class="key">
+        <li><span class="sw sw-ok" aria-hidden="true"></span>Correct (on the diagonal)</li>
+        <li><span class="sw sw-err" aria-hidden="true"></span>Misread</li>
+      </ul>
+      <svg class="diagram cm-svg" viewBox="0 0 714 714" role="img" aria-labelledby="cm-title cm-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="cm-title">Confusion matrix for the licence-plate character CNN</title>
+<desc id="cm-desc">400 test characters. Rows are the true character, columns the prediction. Letters A to Z sit almost entirely on the diagonal. Most errors are digits: 1 read as I (7 times) or L (4), 2 as 7 (9), 7 as T (7), 3 as J or R (4 each), 6 as G or L (4 each), and 8 as 6, 5, or R.</desc>
+<style>.cm-plot{fill:#fff;stroke:#D5DCDA;stroke-width:1}.cm-split{stroke:#56616C;stroke-width:1.25;stroke-dasharray:4 4}.cm-ok{fill:#0E6A87}.cm-err{fill:#D4A000}.cm-n{font:600 10.5px Barlow,sans-serif;fill:#18222D;text-anchor:middle;pointer-events:none}.cm-tick{font:600 12px "Barlow Condensed",sans-serif;fill:#56616C}.cm-axis{font:400 14px Barlow,sans-serif;fill:#56616C;text-anchor:middle}.cm-group{font:600 30px "Barlow Condensed",sans-serif;fill:#56616C;text-anchor:middle;display:none}@media (max-width:560px){.cm-tick,.cm-axis,.cm-n{display:none}.cm-group{display:inline}}</style>
+<rect class="cm-plot" x="58" y="14" width="648" height="648"/>
+<rect class="cm-ok" x="59" y="15" width="16" height="16" rx="2" fill-opacity="0.48"><title>True A: 5 of 5 correct</title></rect>
+<rect class="cm-ok" x="77" y="33" width="16" height="16" rx="2" fill-opacity="0.67"><title>True B: 9 of 9 correct</title></rect>
+<rect class="cm-ok" x="95" y="51" width="16" height="16" rx="2" fill-opacity="0.72"><title>True C: 10 of 10 correct</title></rect>
+<rect class="cm-ok" x="113" y="69" width="16" height="16" rx="2" fill-opacity="0.44"><title>True D: 4 of 4 correct</title></rect>
+<rect class="cm-ok" x="131" y="87" width="16" height="16" rx="2" fill-opacity="0.53"><title>True E: 6 of 7 correct</title></rect>
+<rect class="cm-ok" x="149" y="105" width="16" height="16" rx="2" fill-opacity="0.62"><title>True F: 8 of 8 correct</title></rect>
+<rect class="cm-ok" x="167" y="123" width="16" height="16" rx="2" fill-opacity="0.44"><title>True G: 4 of 4 correct</title></rect>
+<rect class="cm-ok" x="185" y="141" width="16" height="16" rx="2" fill-opacity="0.44"><title>True H: 4 of 4 correct</title></rect>
+<rect class="cm-ok" x="203" y="159" width="16" height="16" rx="2" fill-opacity="0.72"><title>True I: 10 of 10 correct</title></rect>
+<rect class="cm-ok" x="221" y="177" width="16" height="16" rx="2" fill-opacity="0.53"><title>True J: 6 of 6 correct</title></rect>
+<rect class="cm-ok" x="239" y="195" width="16" height="16" rx="2" fill-opacity="0.34"><title>True K: 2 of 2 correct</title></rect>
+<rect class="cm-ok" x="257" y="213" width="16" height="16" rx="2" fill-opacity="0.58"><title>True L: 7 of 7 correct</title></rect>
+<rect class="cm-ok" x="275" y="231" width="16" height="16" rx="2" fill-opacity="0.72"><title>True M: 10 of 11 correct</title></rect>
+<rect class="cm-ok" x="293" y="249" width="16" height="16" rx="2" fill-opacity="0.53"><title>True N: 6 of 6 correct</title></rect>
+<rect class="cm-ok" x="311" y="267" width="16" height="16" rx="2" fill-opacity="0.39"><title>True O: 3 of 3 correct</title></rect>
+<rect class="cm-ok" x="329" y="285" width="16" height="16" rx="2" fill-opacity="0.62"><title>True P: 8 of 9 correct</title></rect>
+<rect class="cm-ok" x="347" y="303" width="16" height="16" rx="2" fill-opacity="0.53"><title>True Q: 6 of 6 correct</title></rect>
+<rect class="cm-ok" x="365" y="321" width="16" height="16" rx="2" fill-opacity="0.72"><title>True R: 10 of 10 correct</title></rect>
+<rect class="cm-ok" x="383" y="339" width="16" height="16" rx="2" fill-opacity="0.72"><title>True S: 10 of 10 correct</title></rect>
+<rect class="cm-ok" x="401" y="357" width="16" height="16" rx="2" fill-opacity="0.62"><title>True T: 8 of 8 correct</title></rect>
+<rect class="cm-ok" x="419" y="375" width="16" height="16" rx="2" fill-opacity="0.81"><title>True U: 12 of 13 correct</title></rect>
+<rect class="cm-ok" x="437" y="393" width="16" height="16" rx="2" fill-opacity="0.62"><title>True V: 8 of 9 correct</title></rect>
+<rect class="cm-ok" x="455" y="411" width="16" height="16" rx="2" fill-opacity="0.67"><title>True W: 9 of 9 correct</title></rect>
+<rect class="cm-ok" x="473" y="429" width="16" height="16" rx="2" fill-opacity="0.91"><title>True X: 14 of 14 correct</title></rect>
+<rect class="cm-ok" x="491" y="447" width="16" height="16" rx="2" fill-opacity="0.48"><title>True Y: 5 of 5 correct</title></rect>
+<rect class="cm-ok" x="509" y="465" width="16" height="16" rx="2" fill-opacity="0.77"><title>True Z: 11 of 11 correct</title></rect>
+<rect class="cm-ok" x="527" y="483" width="16" height="16" rx="2" fill-opacity="0.81"><title>True 0: 12 of 16 correct</title></rect>
+<rect class="cm-ok" x="545" y="501" width="16" height="16" rx="2" fill-opacity="0.81"><title>True 1: 12 of 23 correct</title></rect>
+<rect class="cm-ok" x="563" y="519" width="16" height="16" rx="2" fill-opacity="1.00"><title>True 2: 16 of 27 correct</title></rect>
+<rect class="cm-ok" x="581" y="537" width="16" height="16" rx="2" fill-opacity="0.62"><title>True 3: 8 of 17 correct</title></rect>
+<rect class="cm-ok" x="599" y="555" width="16" height="16" rx="2" fill-opacity="0.91"><title>True 4: 14 of 19 correct</title></rect>
+<rect class="cm-ok" x="617" y="573" width="16" height="16" rx="2" fill-opacity="0.81"><title>True 5: 12 of 14 correct</title></rect>
+<rect class="cm-ok" x="635" y="591" width="16" height="16" rx="2" fill-opacity="0.95"><title>True 6: 15 of 23 correct</title></rect>
+<rect class="cm-ok" x="653" y="609" width="16" height="16" rx="2" fill-opacity="0.62"><title>True 7: 8 of 16 correct</title></rect>
+<rect class="cm-ok" x="671" y="627" width="16" height="16" rx="2" fill-opacity="0.67"><title>True 8: 9 of 26 correct</title></rect>
+<rect class="cm-ok" x="689" y="645" width="16" height="16" rx="2" fill-opacity="1.00"><title>True 9: 16 of 19 correct</title></rect>
+<rect class="cm-err" x="149" y="87" width="16" height="16" rx="2" fill-opacity="0.51"><title>True E, predicted F: 1 of 7</title></rect>
+<text class="cm-n" x="157.0" y="98.8">1</text>
+<rect class="cm-err" x="617" y="231" width="16" height="16" rx="2" fill-opacity="0.51"><title>True M, predicted 5: 1 of 11</title></rect>
+<text class="cm-n" x="625.0" y="242.8">1</text>
+<rect class="cm-err" x="149" y="285" width="16" height="16" rx="2" fill-opacity="0.51"><title>True P, predicted F: 1 of 9</title></rect>
+<text class="cm-n" x="157.0" y="296.8">1</text>
+<rect class="cm-err" x="221" y="375" width="16" height="16" rx="2" fill-opacity="0.51"><title>True U, predicted J: 1 of 13</title></rect>
+<text class="cm-n" x="229.0" y="386.8">1</text>
+<rect class="cm-err" x="689" y="393" width="16" height="16" rx="2" fill-opacity="0.51"><title>True V, predicted 9: 1 of 9</title></rect>
+<text class="cm-n" x="697.0" y="404.8">1</text>
+<rect class="cm-err" x="365" y="483" width="16" height="16" rx="2" fill-opacity="0.51"><title>True 0, predicted R: 1 of 16</title></rect>
+<text class="cm-n" x="373.0" y="494.8">1</text>
+<rect class="cm-err" x="689" y="483" width="16" height="16" rx="2" fill-opacity="0.63"><title>True 0, predicted 9: 3 of 16</title></rect>
+<text class="cm-n" x="697.0" y="494.8">3</text>
+<rect class="cm-err" x="203" y="501" width="16" height="16" rx="2" fill-opacity="0.88"><title>True 1, predicted I: 7 of 23</title></rect>
+<text class="cm-n" x="211.0" y="512.8">7</text>
+<rect class="cm-err" x="257" y="501" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 1, predicted L: 4 of 23</title></rect>
+<text class="cm-n" x="265.0" y="512.8">4</text>
+<rect class="cm-err" x="599" y="519" width="16" height="16" rx="2" fill-opacity="0.57"><title>True 2, predicted 4: 2 of 27</title></rect>
+<text class="cm-n" x="607.0" y="530.8">2</text>
+<rect class="cm-err" x="653" y="519" width="16" height="16" rx="2" fill-opacity="1.00"><title>True 2, predicted 7: 9 of 27</title></rect>
+<text class="cm-n" x="661.0" y="530.8">9</text>
+<rect class="cm-err" x="167" y="537" width="16" height="16" rx="2" fill-opacity="0.51"><title>True 3, predicted G: 1 of 17</title></rect>
+<text class="cm-n" x="175.0" y="548.8">1</text>
+<rect class="cm-err" x="221" y="537" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 3, predicted J: 4 of 17</title></rect>
+<text class="cm-n" x="229.0" y="548.8">4</text>
+<rect class="cm-err" x="365" y="537" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 3, predicted R: 4 of 17</title></rect>
+<text class="cm-n" x="373.0" y="548.8">4</text>
+<rect class="cm-err" x="437" y="555" width="16" height="16" rx="2" fill-opacity="0.63"><title>True 4, predicted V: 3 of 19</title></rect>
+<text class="cm-n" x="445.0" y="566.8">3</text>
+<rect class="cm-err" x="689" y="555" width="16" height="16" rx="2" fill-opacity="0.57"><title>True 4, predicted 9: 2 of 19</title></rect>
+<text class="cm-n" x="697.0" y="566.8">2</text>
+<rect class="cm-err" x="257" y="573" width="16" height="16" rx="2" fill-opacity="0.57"><title>True 5, predicted L: 2 of 14</title></rect>
+<text class="cm-n" x="265.0" y="584.8">2</text>
+<rect class="cm-err" x="167" y="591" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 6, predicted G: 4 of 23</title></rect>
+<text class="cm-n" x="175.0" y="602.8">4</text>
+<rect class="cm-err" x="257" y="591" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 6, predicted L: 4 of 23</title></rect>
+<text class="cm-n" x="265.0" y="602.8">4</text>
+<rect class="cm-err" x="365" y="609" width="16" height="16" rx="2" fill-opacity="0.51"><title>True 7, predicted R: 1 of 16</title></rect>
+<text class="cm-n" x="373.0" y="620.8">1</text>
+<rect class="cm-err" x="401" y="609" width="16" height="16" rx="2" fill-opacity="0.88"><title>True 7, predicted T: 7 of 16</title></rect>
+<text class="cm-n" x="409.0" y="620.8">7</text>
+<rect class="cm-err" x="59" y="627" width="16" height="16" rx="2" fill-opacity="0.51"><title>True 8, predicted A: 1 of 26</title></rect>
+<text class="cm-n" x="67.0" y="638.8">1</text>
+<rect class="cm-err" x="365" y="627" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 8, predicted R: 4 of 26</title></rect>
+<text class="cm-n" x="373.0" y="638.8">4</text>
+<rect class="cm-err" x="617" y="627" width="16" height="16" rx="2" fill-opacity="0.69"><title>True 8, predicted 5: 4 of 26</title></rect>
+<text class="cm-n" x="625.0" y="638.8">4</text>
+<rect class="cm-err" x="635" y="627" width="16" height="16" rx="2" fill-opacity="0.76"><title>True 8, predicted 6: 5 of 26</title></rect>
+<text class="cm-n" x="643.0" y="638.8">5</text>
+<rect class="cm-err" x="689" y="627" width="16" height="16" rx="2" fill-opacity="0.63"><title>True 8, predicted 9: 3 of 26</title></rect>
+<text class="cm-n" x="697.0" y="638.8">3</text>
+<rect class="cm-err" x="653" y="645" width="16" height="16" rx="2" fill-opacity="0.63"><title>True 9, predicted 7: 3 of 19</title></rect>
+<text class="cm-n" x="661.0" y="656.8">3</text>
+<line class="cm-split" x1="526" y1="14" x2="526" y2="662"/>
+<line class="cm-split" x1="58" y1="482" x2="706" y2="482"/>
+<text class="cm-tick" x="52" y="27.0" text-anchor="end">A</text>
+<text class="cm-tick" x="67.0" y="677" text-anchor="middle">A</text>
+<text class="cm-tick" x="52" y="45.0" text-anchor="end">B</text>
+<text class="cm-tick" x="85.0" y="677" text-anchor="middle">B</text>
+<text class="cm-tick" x="52" y="63.0" text-anchor="end">C</text>
+<text class="cm-tick" x="103.0" y="677" text-anchor="middle">C</text>
+<text class="cm-tick" x="52" y="81.0" text-anchor="end">D</text>
+<text class="cm-tick" x="121.0" y="677" text-anchor="middle">D</text>
+<text class="cm-tick" x="52" y="99.0" text-anchor="end">E</text>
+<text class="cm-tick" x="139.0" y="677" text-anchor="middle">E</text>
+<text class="cm-tick" x="52" y="117.0" text-anchor="end">F</text>
+<text class="cm-tick" x="157.0" y="677" text-anchor="middle">F</text>
+<text class="cm-tick" x="52" y="135.0" text-anchor="end">G</text>
+<text class="cm-tick" x="175.0" y="677" text-anchor="middle">G</text>
+<text class="cm-tick" x="52" y="153.0" text-anchor="end">H</text>
+<text class="cm-tick" x="193.0" y="677" text-anchor="middle">H</text>
+<text class="cm-tick" x="52" y="171.0" text-anchor="end">I</text>
+<text class="cm-tick" x="211.0" y="677" text-anchor="middle">I</text>
+<text class="cm-tick" x="52" y="189.0" text-anchor="end">J</text>
+<text class="cm-tick" x="229.0" y="677" text-anchor="middle">J</text>
+<text class="cm-tick" x="52" y="207.0" text-anchor="end">K</text>
+<text class="cm-tick" x="247.0" y="677" text-anchor="middle">K</text>
+<text class="cm-tick" x="52" y="225.0" text-anchor="end">L</text>
+<text class="cm-tick" x="265.0" y="677" text-anchor="middle">L</text>
+<text class="cm-tick" x="52" y="243.0" text-anchor="end">M</text>
+<text class="cm-tick" x="283.0" y="677" text-anchor="middle">M</text>
+<text class="cm-tick" x="52" y="261.0" text-anchor="end">N</text>
+<text class="cm-tick" x="301.0" y="677" text-anchor="middle">N</text>
+<text class="cm-tick" x="52" y="279.0" text-anchor="end">O</text>
+<text class="cm-tick" x="319.0" y="677" text-anchor="middle">O</text>
+<text class="cm-tick" x="52" y="297.0" text-anchor="end">P</text>
+<text class="cm-tick" x="337.0" y="677" text-anchor="middle">P</text>
+<text class="cm-tick" x="52" y="315.0" text-anchor="end">Q</text>
+<text class="cm-tick" x="355.0" y="677" text-anchor="middle">Q</text>
+<text class="cm-tick" x="52" y="333.0" text-anchor="end">R</text>
+<text class="cm-tick" x="373.0" y="677" text-anchor="middle">R</text>
+<text class="cm-tick" x="52" y="351.0" text-anchor="end">S</text>
+<text class="cm-tick" x="391.0" y="677" text-anchor="middle">S</text>
+<text class="cm-tick" x="52" y="369.0" text-anchor="end">T</text>
+<text class="cm-tick" x="409.0" y="677" text-anchor="middle">T</text>
+<text class="cm-tick" x="52" y="387.0" text-anchor="end">U</text>
+<text class="cm-tick" x="427.0" y="677" text-anchor="middle">U</text>
+<text class="cm-tick" x="52" y="405.0" text-anchor="end">V</text>
+<text class="cm-tick" x="445.0" y="677" text-anchor="middle">V</text>
+<text class="cm-tick" x="52" y="423.0" text-anchor="end">W</text>
+<text class="cm-tick" x="463.0" y="677" text-anchor="middle">W</text>
+<text class="cm-tick" x="52" y="441.0" text-anchor="end">X</text>
+<text class="cm-tick" x="481.0" y="677" text-anchor="middle">X</text>
+<text class="cm-tick" x="52" y="459.0" text-anchor="end">Y</text>
+<text class="cm-tick" x="499.0" y="677" text-anchor="middle">Y</text>
+<text class="cm-tick" x="52" y="477.0" text-anchor="end">Z</text>
+<text class="cm-tick" x="517.0" y="677" text-anchor="middle">Z</text>
+<text class="cm-tick" x="52" y="495.0" text-anchor="end">0</text>
+<text class="cm-tick" x="535.0" y="677" text-anchor="middle">0</text>
+<text class="cm-tick" x="52" y="513.0" text-anchor="end">1</text>
+<text class="cm-tick" x="553.0" y="677" text-anchor="middle">1</text>
+<text class="cm-tick" x="52" y="531.0" text-anchor="end">2</text>
+<text class="cm-tick" x="571.0" y="677" text-anchor="middle">2</text>
+<text class="cm-tick" x="52" y="549.0" text-anchor="end">3</text>
+<text class="cm-tick" x="589.0" y="677" text-anchor="middle">3</text>
+<text class="cm-tick" x="52" y="567.0" text-anchor="end">4</text>
+<text class="cm-tick" x="607.0" y="677" text-anchor="middle">4</text>
+<text class="cm-tick" x="52" y="585.0" text-anchor="end">5</text>
+<text class="cm-tick" x="625.0" y="677" text-anchor="middle">5</text>
+<text class="cm-tick" x="52" y="603.0" text-anchor="end">6</text>
+<text class="cm-tick" x="643.0" y="677" text-anchor="middle">6</text>
+<text class="cm-tick" x="52" y="621.0" text-anchor="end">7</text>
+<text class="cm-tick" x="661.0" y="677" text-anchor="middle">7</text>
+<text class="cm-tick" x="52" y="639.0" text-anchor="end">8</text>
+<text class="cm-tick" x="679.0" y="677" text-anchor="middle">8</text>
+<text class="cm-tick" x="52" y="657.0" text-anchor="end">9</text>
+<text class="cm-tick" x="697.0" y="677" text-anchor="middle">9</text>
+<text class="cm-axis" x="382.0" y="702">predicted character</text>
+<text class="cm-axis" transform="translate(18 338.0) rotate(-90)">true character</text>
+<text class="cm-group" x="292.0" y="700">A–Z</text>
+<text class="cm-group" x="616.0" y="700">0–9</text>
+<text class="cm-group" transform="translate(40 248.0) rotate(-90)">A–Z</text>
+<text class="cm-group" transform="translate(40 572.0) rotate(-90)">0–9</text>
+</svg>
+    </div>
+    <figcaption>Figure 3. Confusion matrix for the 400 test characters, redrawn from my notebook. Rows are the true character and columns are the prediction; darker means more. The errors cluster in the bottom rows, where digits were read as other characters.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <p>The letters were nearly perfect, but almost every error was a digit, usually read as a character with a similar shape: 1 as I or L, 7 as T, 2 as 7, 6 as G. Digits had the most training examples, about 200 each against about 75 per letter, so the problem wasn’t the amount of data. The network had only ever trained on perfect, identical renderings, and the test plates were less clean, so small shifts and tilts were enough to throw it off. The fix is to make the training data look more like the real input, with random rotation, blur, noise, and brightness changes. That lesson carries straight into the competition, where the robot sees clue boards through its own camera rather than straight on.</p>
+
+    <h2>Q-learning a line follower</h2>
+    <p>Back in simulation, I trained a tabular Q-learning agent to follow a line by itself, through a Gymnasium interface to Gazebo Sim that pauses the simulation, takes an observation, applies an action, and resets the robot whenever it loses the line. The state comes from the camera: I split each frame into three zones and used whichever zone contains the line. The agent chooses between three steering actions, explores with an epsilon-greedy policy, and updates its Q-table with the Bellman equation. I wrote the reward function, tracked reward per episode in TensorBoard, and saved the best-performing Q-table.</p>
+  </div>
+  <div class="pair">
+    <figure>
+      <video src="assets/enph353-rl-line.mp4" poster="assets/enph353-rl-line-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Gazebo Sim showing the small green robot following a blue line during Q-learning training"></video>
+      <figcaption>Figure 4. The Q-learning agent driving the line in Gazebo Sim during training.</figcaption>
+    </figure>
+    <figure>
+    <div class="diagram-box"><svg class="diagram" viewBox="0 0 480 300" role="img" aria-labelledby="st-title st-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="st-title">Q-learning state from the camera image</title>
+<desc id="st-desc">The camera frame is split into left, centre, and right zones. The zone that contains the line becomes the agent's state.</desc>
+<style>.frame{fill:#fff;stroke:#18222D;stroke-width:1.5}.zone{fill:none;stroke:#D5DCDA;stroke-width:1.5}.hit{fill:#D4A000;fill-opacity:.18;stroke:#D4A000;stroke-width:2.5}.line{fill:none;stroke:#18222D;stroke-width:14;stroke-linecap:round}.zl{font:600 18px "Barlow Condensed",sans-serif;fill:#56616C;text-anchor:middle}</style>
+<rect class="frame" x="20" y="20" width="440" height="230" rx="3"/>
+<rect class="hit" x="166.7" y="20" width="146.6" height="230"/>
+<line class="zone" x1="166.7" y1="20" x2="166.7" y2="250"/><line class="zone" x1="313.3" y1="20" x2="313.3" y2="250"/>
+<path class="line" d="M215,250 C230,180 270,120 330,20"/>
+<text class="zl" x="93" y="282">left</text><text class="zl" x="240" y="282">centre</text><text class="zl" x="387" y="282">right</text>
+</svg></div>
+    <figcaption>Figure 5. The agent’s state: which third of the camera frame the line is in.</figcaption>
+    </figure>
+  </div>
+  <!-- To add: the TensorBoard reward-per-episode plot.
+  <figure>
+    <img src="assets/enph353-reward.png" alt="Reward per episode rising during Q-learning training" loading="lazy">
+    <figcaption>Reward per episode during training.</figcaption>
+  </figure>
+  -->
+
+  <div class="prose">
+    <h2>Balancing an inverted pendulum with deep RL</h2>
+    <p>Next, we combined reinforcement learning with a neural network to control an unstable system: a cart on a rail in Gazebo that has to keep a hinged pole upright. The agent doesn’t use the camera here. It reads four numbers from the joint states, the cart’s position and velocity and the pole’s angle and angular velocity, and a small fully connected network in PyTorch maps them straight to an action: nudge the cart’s velocity left or right. Unlike the Q-table, the network outputs the policy directly.</p>
+    <p>I trained it with the cross-entropy method. The agent runs a batch of episodes with its current network and scores a point for every step the pole stays upright. Only the top-scoring “elite” episodes are kept, and the network is trained to repeat the actions taken in them. Each round, the policy does a little better than the last, and I tracked the rewards in TensorBoard.</p>
+  </div>
+  <figure>
+    <video class="cartpole" src="assets/enph353-cartpole.mp4" poster="assets/enph353-cartpole-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="A blue cart on a rail in Gazebo, moving to keep a vertical pole balanced"></video>
+    <figcaption>Figure 6. The cart-pole in Gazebo: the agent moves the cart back and forth to keep the pole upright.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>The competition (in progress)</h2>
+    <p>The course ends with Fizz Detective, a competition between teams of two. In a four-minute round in Gazebo, our robot has to drive a course using only its camera, stay on the road, avoid a pedestrian and a truck, and read eight clue boards of up to 12 characters each. Correct clues earn points; leaving the road and collisions cost them. The rules require us to design and train our own neural networks rather than use pre-trained text recognition, and to keep the simulation running at least half as fast as real time, so the models also have to be cheap to run.</p>
+    <p>My partner and I are now building it in PyTorch: a detector that finds clue boards in the camera image, a CNN that reads their characters, and a driving policy that learns from camera images through imitation and reinforcement learning. I’ll add results here after the competition.</p>
+  </div>
+
+  <p class="next"><a href="enph-253.html">Back to the ENPH 253 robot</a></p>
+</main>
+
+<footer class="site-foot wrap">
+  <div class="contact">
+    <a href="mailto:ijarov94@gmail.com">ijarov94@gmail.com</a>
+    <a href="https://www.linkedin.com/in/ilya-hsieh-jarov">LinkedIn</a>
+    <a href="https://github.com/Ijarov">GitHub</a>
+    <a href="resume.pdf">Resume</a>
+  </div>
+  <span>Updated November 2026</span>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

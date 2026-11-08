@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autonomous competition robot | Ilya Hsieh-Jarov</title>
+  <meta name="description" content="ENPH 253 autonomous robot: drivetrain and worm-gear claw design, wheel-encoder filtering, and a metal detector PCB.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head wrap">
+  <a class="home" href="index.html">Ilya Hsieh-Jarov</a>
+  <nav aria-label="Site">
+    <a href="index.html#projects">Projects</a>
+    <a href="resume.pdf">Resume</a>
+  </nav>
+</header>
+
+<main id="main" class="wrap">
+  <div class="page-head">
+    <h1>Autonomous competition robot</h1>
+    <p class="lead">In UBC’s ENPH 253 robotics design course, my team designed and built a fully autonomous robot over the summer. On competition day it had to follow a taped course, climb an incline, leave the track to pick up rocks with a claw, check them for metal, and find the line again.</p>
+    <dl class="facts">
+      <dt>Course</dt><dd>ENPH 253, robotics design project</dd>
+      <dt>Dates</dt><dd>May to August 2026</dd>
+      <dt>My work</dt><dd>Drivetrain and claw design, wheel-encoder filtering, metal detector schematic and PCB, wiring and integration</dd>
+      <dt>Tools</dt><dd>Onshape, KiCad, ESP32, C++, 3D printing, laser cutting, oscilloscope</dd>
+    </dl>
+  </div>
+
+  <figure class="bleed">
+    <video src="assets/enph253-run.mp4" poster="assets/enph253-run-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The robot reaches out with its claw and picks up a rock from the competition course"></video>
+    <figcaption>Figure 1. Picking up a rock during the competition.</figcaption>
+  </figure>
+
+  <div class="prose results">
+    <h2>What it did</h2>
+    <ul>
+      <li>Followed the full taped course at 15 cm/s, including a 7° incline</li>
+      <li>Left the track to retrieve rocks with its claw, then found the line again and continued</li>
+      <li>Checked each rock for metal with a coil detector built into the claw</li>
+      <li>Ran a vision model for target detection, trained on 300+ photos (80% accuracy), on a Raspberry Pi Zero W</li>
+    </ul>
+  </div>
+
+  <div class="prose">
+    <h2>The robot</h2>
+    <p>We modelled the full assembly in Onshape and built the chassis from laser-cut panels. The team built H-bridge motor drivers and wrote C++ firmware on ESP32 microcontrollers: a state machine for the course, PID line following, and sonar and optical sensing. To read more sensors than the microcontroller had pins for, we added an external ADC on the SPI bus.</p>
+  </div>
+  <figure class="bleed">
+    <img class="robot-shot" src="assets/enph253-robot.jpg" alt="The finished robot on a lab bench, showing its laser-cut wooden chassis, wiring, and claw" width="1200" height="1600" loading="lazy">
+    <figcaption>Figure 2. The finished robot.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>Claw and gripper</h2>
+    <p>I designed the claw around a worm gear driving a four-bar linkage. The 1:25 worm drive gives the claw plenty of closing torque, and because a worm gear can’t be back-driven, the claw holds its grip without the motor holding it. The main structure is PLA and acetal, to keep it rigid without adding weight at the end of the arm. A forward-facing sonar sensor measures the distance to the rock, and a metal-detecting coil sits in the base of the claw, around the rock.</p>
+  </div>
+  <div class="pair crop">
+    <figure>
+      <video src="assets/enph253-claw-cad.mp4" poster="assets/enph253-claw-cad-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="CAD animation of the worm gear turning the four-bar linkage to open and close the claw"></video>
+      <figcaption>Figure 3. CAD motion study of the gear-driven linkage.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/enph253-claw.jpg" alt="Close-up of the built claw showing the worm gear, spur gears, and linkage arms" width="1206" height="1209" loading="lazy">
+      <figcaption>Figure 4. The built claw, seen from above.</figcaption>
+    </figure>
+  </div>
+
+  <dl class="debug" aria-label="Debugging the claw">
+    <dt>Problem</dt>
+    <dd>The 3D-printed worm gear often jammed, especially at the fully open and fully closed positions.</dd>
+    <dt>Cause</dt>
+    <dd>The printed worm gear was coarse and expanded slightly from the heat of printing, so the real tolerances were tighter than in CAD and the gears didn’t mesh smoothly. At the ends of travel, the motor also kept driving at a high PWM duty cycle, forcing loose arm parts into a jam that it didn’t have the torque to back out of.</dd>
+    <dt>Fix</dt>
+    <dd>We redesigned the worm gear with much looser tolerances and added lithium grease. That added some play to the claw, but we chose reliability over precision. It still jammed when fully open, so we added a limit switch at the half-open position, which was the best stopping point mechanically. That ended the jamming.</dd>
+  </dl>
+
+  <div class="prose">
+    <h2>Filtering the wheel encoders</h2>
+    <p>The wheel encoders tell the robot how far each wheel has turned, so they need to give clean pulses.</p>
+  </div>
+  <dl class="debug" aria-label="Debugging the encoders">
+    <dt>Problem</dt>
+    <dd>On the oscilloscope, the encoder output was extremely noisy even when we turned the wheel by hand, so we couldn’t track wheel position.</dd>
+    <dt>Cause</dt>
+    <dd>The encoders are mechanical switches, and their contacts bounce at high frequency every time they open or close. The wheels never spin fast, so the real signal is low frequency and the bounce could be filtered out.</dd>
+    <dt>Fix</dt>
+    <dd>I designed a circuit that passes the signal through an RC low-pass filter, then a Schmitt trigger and an amplifier. It turned the bouncing signal into clean square waves.</dd>
+  </dl>
+  <figure class="bleed">
+    <img src="assets/enph253-encoder-filter.png" alt="Schematic of a filtering circuit with op-amps, an RC low-pass stage, and a Schmitt trigger" width="1600" height="616" loading="lazy">
+    <figcaption>Figure 5. A similar filter circuit that we used for an infrared phototransistor sensor.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>Metal detector PCB</h2>
+    <p>The metal detector is built around a TDA0161 proximity-detector chip and a coil. When metal comes near the coil, the oscillation changes and the circuit flags it.</p>
+  </div>
+  <dl class="debug" aria-label="Debugging the metal detector">
+    <dt>Problem</dt>
+    <dd>On a breadboard and then a protoboard, the circuit wouldn’t work reliably. It only oscillates properly with the right coil inductance and capacitance.</dd>
+    <dt>Cause</dt>
+    <dd>Our coil was too large and had too much inductance, and the breadboard and protoboard connections were unreliable.</dd>
+    <dt>Fix</dt>
+    <dd>We worked out suitable capacitor values and the number of coil turns, and I drew the schematic in KiCad and laid out a PCB so the connections would be solid.</dd>
+  </dl>
+  <div class="figs">
+    <figure class="bleed">
+      <img src="assets/enph253-md-schematic.png" alt="KiCad schematic of the metal detector built around a TDA0161 chip" width="1600" height="862" loading="lazy">
+      <figcaption>Figure 6. Metal detector schematic.</figcaption>
+    </figure>
+    <div class="pair">
+      <figure>
+        <img src="assets/enph253-md-pcb.png" alt="KiCad PCB layout of the metal detector board" width="1600" height="1109" loading="lazy">
+        <figcaption>Figure 7. PCB layout.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/enph253-md-pcb-3d.png" alt="3D render of the metal detector PCB with components" width="1600" height="1111" loading="lazy">
+        <figcaption>Figure 8. 3D render of the board.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="pair">
+    <figure>
+      <img src="assets/enph253-detect-metal.jpg" alt="The claw lowered over a rock on the course to check it for metal" width="1600" height="905" loading="lazy">
+      <figcaption>Figure 9. Checking a rock for metal.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/enph253-retrieve.jpg" alt="The robot on the course reaching for a rock with its claw" width="1600" height="907" loading="lazy">
+      <figcaption>Figure 10. Retrieving a rock.</figcaption>
+    </figure>
+  </div>
+
+  <p class="next"><a href="enph-259.html">Next: closed-loop motor speed controller</a></p>
+</main>
+
+<footer class="site-foot wrap">
+  <div class="contact">
+    <a href="mailto:ijarov94@gmail.com">ijarov94@gmail.com</a>
+    <a href="https://www.linkedin.com/in/ilya-hsieh-jarov">LinkedIn</a>
+    <a href="https://github.com/Ijarov">GitHub</a>
+    <a href="resume.pdf">Resume</a>
+  </div>
+  <span>Updated November 2026</span>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Closed-loop motor speed controller | Ilya Hsieh-Jarov</title>
+  <meta name="description" content="ENPH 259: a motor speed controller built from discrete digital and analog parts, and how I debugged it stage by stage.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head wrap">
+  <a class="home" href="index.html">Ilya Hsieh-Jarov</a>
+  <nav aria-label="Site">
+    <a href="index.html#projects">Projects</a>
+    <a href="resume.pdf">Resume</a>
+  </nav>
+</header>
+
+<main id="main" class="wrap">
+  <div class="page-head">
+    <h1>Closed-loop motor speed controller</h1>
+    <p class="lead">In ENPH 259, a lab-based electronics course, I built a DC motor speed controller from discrete digital and analog parts, then tested and debugged it one stage at a time.</p>
+    <dl class="facts">
+      <dt>Course</dt><dd>ENPH 259, electronics lab</dd>
+      <dt>Dates</dt><dd>September to December 2025</dd>
+      <dt>Result</dt><dd>Speed tracked the setpoint linearly (R²&nbsp;=&nbsp;0.9996) up to about 4200 RPM</dd>
+      <dt>Tools</dt><dd>Op-amps, BJTs, digital logic, oscilloscope, logic analyzer, multimeter</dd>
+    </dl>
+  </div>
+
+  <div class="prose">
+    <h2>How it works</h2>
+    <p>An encoder on the motor shaft produces pulses as it turns. A counter counts them, a latch holds each count steady, and an R-2R resistor ladder turns that number into a voltage proportional to the speed. An op-amp PI controller compares that measured speed with the setpoint and drives the motor through a BJT stage, which closes the loop.</p>
+  </div>
+  <figure class="bleed">
+    <div class="diagram-box"><svg class="diagram" viewBox="0 0 900 300" role="img" aria-labelledby="loop-title loop-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="loop-title">Speed control loop</title>
+<desc id="loop-desc">The setpoint and the measured speed feed an op-amp PI controller, which drives the motor through a BJT stage. The encoder pulses are counted, latched, and converted back to a voltage by an R-2R DAC, closing the loop.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahead"/></marker></defs>
+<style>.blk{fill:#fff;stroke:#18222D;stroke-width:1.5}.blk-hl{fill:#fff;stroke:#D4A000;stroke-width:3}.lbl{font:600 19px "Barlow Condensed",sans-serif;fill:#18222D;text-anchor:middle}.sub{font:400 14px Barlow,sans-serif;fill:#56616C;text-anchor:middle}.wire{stroke:#0E6A87;stroke-width:2;fill:none}.ahead{fill:#0E6A87}.note{font:italic 400 14px Barlow,sans-serif;fill:#56616C}</style>
+<text class="note" x="18" y="77.0">setpoint</text>
+<line class="wire" x1="80" y1="72.0" x2="140" y2="72.0" marker-end="url(#ah)"/>
+<rect class="blk" x="140" y="40" width="150" height="64" rx="3"/><text class="lbl" x="215.0" y="68.0">PI controller</text><text class="sub" x="215.0" y="88.0">op-amp</text>
+<line class="wire" x1="290" y1="72.0" x2="370" y2="72.0" marker-end="url(#ah)"/>
+<rect class="blk" x="370" y="40" width="150" height="64" rx="3"/><text class="lbl" x="445.0" y="68.0">Driver</text><text class="sub" x="445.0" y="88.0">BJT</text>
+<line class="wire" x1="520" y1="72.0" x2="600" y2="72.0" marker-end="url(#ah)"/>
+<rect class="blk" x="600" y="40" width="150" height="64" rx="3"/><text class="lbl" x="675.0" y="78.0">DC motor</text>
+<path class="wire" d="M750,72.0 L830,72.0 L830,232.0 L752,232.0" marker-end="url(#ah)"/>
+<rect class="blk" x="600" y="200" width="150" height="64" rx="3"/><text class="lbl" x="675.0" y="228.0">Encoder</text><text class="sub" x="675.0" y="248.0">pulses</text>
+<line class="wire" x1="600" y1="232.0" x2="522" y2="232.0" marker-end="url(#ah)"/>
+<rect class="blk" x="450" y="200" width="70" height="64" rx="3"/><text class="lbl" x="485.0" y="238.0">Counter</text>
+<line class="wire" x1="450" y1="232.0" x2="402" y2="232.0" marker-end="url(#ah)"/>
+<rect class="blk" x="330" y="200" width="70" height="64" rx="3"/><text class="lbl" x="365.0" y="238.0">Latch</text>
+<line class="wire" x1="330" y1="232.0" x2="292" y2="232.0" marker-end="url(#ah)"/>
+<rect class="blk-hl" x="140" y="200" width="150" height="64" rx="3"/><text class="lbl" x="215.0" y="228.0">R-2R DAC</text><text class="sub" x="215.0" y="248.0">speed as voltage</text>
+<line class="wire" x1="215" y1="200" x2="215" y2="106" marker-end="url(#ah)"/>
+<text class="note" x="225" y="157.0">measured speed</text>
+</svg></div>
+    <figcaption>Figure 1. The control loop. The R-2R ladder, outlined in yellow, is the part from the debugging test below.</figcaption>
+  </figure>
+  <figure class="bleed">
+    <img src="assets/enph259-breadboard.jpg" alt="The finished controller on a breadboard: logic chips including a 74HC14 Schmitt-trigger inverter and a 74HC273 latch on the top half, and op-amps, resistors, and the blue setpoint potentiometer on the bottom half" width="1600" height="1200" loading="lazy">
+    <figcaption>Figure 2. The finished controller. The digital side, including the latch, is on the top half of the board; the analog side, with the op-amps and the setpoint potentiometer, is on the bottom half.</figcaption>
+  </figure>
+  <figure>
+    <video class="portrait" src="assets/enph259-setpoint.mp4" poster="assets/enph259-setpoint-poster.jpg" controls playsinline preload="metadata" aria-label="Turning the setpoint potentiometer with a screwdriver changes the motor speed; the clip ends on the logic analyzer reading the encoder count"></video>
+    <figcaption>Figure 3. Turning the setpoint potentiometer changes the motor’s speed (turn the sound on to hear it). The clip ends on the logic analyzer reading the encoder count.</figcaption>
+  </figure>
+  <!-- To add: a plot of measured speed against setpoint showing the linear fit (R²&nbsp;=&nbsp;0.9996).
+  <figure class="bleed">
+    <img src="assets/enph259-linearity.png" alt="Measured motor speed plotted against setpoint, with a straight-line fit" loading="lazy">
+    <figcaption>Figure 4. Measured speed against setpoint.</figcaption>
+  </figure>
+  -->
+
+  <div class="prose">
+    <h2>Debugging stage by stage</h2>
+    <p>When the controller misbehaved, I didn’t try to debug it as a whole. I worked out what each stage should output, then checked them one at a time with the oscilloscope and logic analyzer until the measurements and my predictions agreed. That approach found a bent pin on the latch and miswired counters in my own build.</p>
+  </div>
+
+  <div class="prose">
+    <h3>The swapped part</h3>
+    <p>The course ended with a debugging test: the instructors took our working circuits and secretly swapped a component for a look-alike with a different part number.</p>
+  </div>
+  <dl class="debug" aria-label="The end-of-course debugging test">
+    <dt>Problem</dt>
+    <dd>After the swap, the circuit no longer worked, and the replacement looked just like the original part.</dd>
+    <dt>Search</dt>
+    <dd>I traced the signal along the loop on the oscilloscope, comparing what each stage received with what it produced.</dd>
+    <dt>Found</dt>
+    <dd>The input to the R-2R ladder was correct, but its output was wrong. The ladder had been replaced with a part that looked the same but had a different part number.</dd>
+  </dl>
+
+  <div class="prose">
+    <h2>Also in this course</h2>
+    <p>I built a DC-DC boost converter and measured its efficiency at 53.3%, which made it very clear how much power a converter can lose.</p>
+  </div>
+
+  <p class="next"><a href="enph-353.html">Next: robot learning in simulation</a></p>
+</main>
+
+<footer class="site-foot wrap">
+  <div class="contact">
+    <a href="mailto:ijarov94@gmail.com">ijarov94@gmail.com</a>
+    <a href="https://www.linkedin.com/in/ilya-hsieh-jarov">LinkedIn</a>
+    <a href="https://github.com/Ijarov">GitHub</a>
+    <a href="resume.pdf">Resume</a>
+  </div>
+  <span>Updated November 2026</span>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>
