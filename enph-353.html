@@ -45,7 +45,13 @@
   <div class="prose">
     <h2>Feature matching in a live webcam feed</h2>
     <p>I built a PyQt5 desktop app that finds a template image in a 10 FPS webcam feed. It detects SIFT features, matches them with FLANN, and uses a RANSAC homography to outline the template in each frame.</p>
+  </div>
+  <figure class="bleed">
+    <img src="assets/enph353-sift.jpg" alt="Left: the app showing the snow leopard template image beside a live webcam frame of me holding up a tablet that displays the same leopard. Right: the Homography window, where the leopard on the tablet is outlined in blue." width="1251" height="369" loading="lazy">
+    <figcaption>Figure 2. My SIFT app. Left: the template image I loaded, and the live webcam frame with the same picture on a tablet. Right: the Homography window, where the match is outlined in blue.</figcaption>
+  </figure>
 
+  <div class="prose">
     <h2>A neural network from scratch</h2>
     <p>To understand what deep learning frameworks do underneath, I built a small autograd engine and neural network following Andrej Karpathy’s micrograd, and checked my gradients against PyTorch.</p>
 
@@ -54,7 +60,7 @@
   </div>
   <figure>
     <img class="crops" src="assets/enph353-plate-crops.jpg" alt="A generated plate reading AA 43, cut into four tall crops: A, A, 4, and 3, each with part of the Beautiful British Columbia slogan above it" width="940" height="646" loading="lazy">
-    <figcaption>Figure 2. One generated plate cut into its four character crops. Each crop is one training example.</figcaption>
+    <figcaption>Figure 3. One generated plate cut into its four character crops. Each crop is one training example.</figcaption>
   </figure>
 
   <div class="prose">
@@ -247,7 +253,7 @@
 <text class="cm-group" transform="translate(40 572.0) rotate(-90)">0–9</text>
 </svg>
     </div>
-    <figcaption>Figure 3. Confusion matrix for the 400 test characters, redrawn from my notebook. Rows are the true character and columns are the prediction; darker means more. The errors cluster in the bottom rows, where digits were read as other characters.</figcaption>
+    <figcaption>Figure 4. Confusion matrix for the 400 test characters, redrawn from my notebook. Rows are the true character and columns are the prediction; darker means more. The errors cluster in the bottom rows, where digits were read as other characters.</figcaption>
   </figure>
 
   <div class="prose">
@@ -259,7 +265,7 @@
   <div class="pair">
     <figure>
       <video src="assets/enph353-rl-line.mp4" poster="assets/enph353-rl-line-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Gazebo Sim showing the small green robot following a blue line during Q-learning training"></video>
-      <figcaption>Figure 4. The Q-learning agent driving the line in Gazebo Sim during training.</figcaption>
+      <figcaption>Figure 5. The Q-learning agent driving the line in Gazebo Sim during training.</figcaption>
     </figure>
     <figure>
     <div class="diagram-box"><svg class="diagram" viewBox="0 0 480 300" role="img" aria-labelledby="st-title st-desc" xmlns="http://www.w3.org/2000/svg">
@@ -272,7 +278,7 @@
 <path class="line" d="M215,250 C230,180 270,120 330,20"/>
 <text class="zl" x="93" y="282">left</text><text class="zl" x="240" y="282">centre</text><text class="zl" x="387" y="282">right</text>
 </svg></div>
-    <figcaption>Figure 5. The agent’s state: which third of the camera frame the line is in.</figcaption>
+    <figcaption>Figure 6. The agent’s state: which third of the camera frame the line is in.</figcaption>
     </figure>
   </div>
   <!-- To add: the TensorBoard reward-per-episode plot.
@@ -289,7 +295,7 @@
   </div>
   <figure>
     <video class="cartpole" src="assets/enph353-cartpole.mp4" poster="assets/enph353-cartpole-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="A blue cart on a rail in Gazebo, moving to keep a vertical pole balanced"></video>
-    <figcaption>Figure 6. The cart-pole in Gazebo: the agent moves the cart back and forth to keep the pole upright.</figcaption>
+    <figcaption>Figure 7. The cart-pole in Gazebo: the agent moves the cart back and forth to keep the pole upright.</figcaption>
   </figure>
 
   <div class="prose">
